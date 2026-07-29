@@ -1,0 +1,21 @@
+app:
+    securityKey: "rjmppJKe1M7Dr5wJq4VxKp4S677/koi59BvkZSzPBYE="
+    session:
+        expr: 2h
+spring:
+    application:
+        name: "demo"
+    data:
+        redis:
+            host: "localhost"
+            port:   6379
+            database:   0
+            username:
+            password:
+    r2dbc:
+        url:    "r2dbc:postgresql://localhost:5432/youyou"
+        username:   youyou
+        password:   "ninia@0210"
+
+server:
+    port: 7898
