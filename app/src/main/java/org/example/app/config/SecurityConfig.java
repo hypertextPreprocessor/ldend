@@ -1,38 +1,19 @@
 package org.example.app.config;
 
-import java.nio.charset.StandardCharsets;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.example.app.components.JwtAuthenticationManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.core.session.ReactiveSessionRegistry;
-import org.springframework.security.core.userdetails.ReactiveUserDetailsPasswordService;
-import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
-import org.springframework.security.jackson.SecurityJacksonModules;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 import org.springframework.security.web.server.authentication.SessionLimit;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
-
 import tools.jackson.databind.ObjectMapper;
-
-import org.springframework.security.core.session.InMemoryReactiveSessionRegistry;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtReactiveAuthenticationManager;
-import org.springframework.security.oauth2.server.resource.web.server.authentication.ServerBearerTokenAuthenticationConverter;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -40,19 +21,18 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @EnableRedisWebSession
 public class SecurityConfig {
-  
-    private final ReactiveJwtDecoder jwtDecoder;
-    private final ReactiveAuthenticationManager jwtAuthenticationManager;
-    public SecurityConfig(ReactiveJwtDecoder jwtDecoder,ReactiveAuthenticationManager jwtAuthenticationManager){
-        this.jwtDecoder = jwtDecoder;
+
+    private final JwtAuthenticationManager jwtAuthenticationManager;
+    public SecurityConfig(JwtAuthenticationManager jwtAuthenticationManager){
         this.jwtAuthenticationManager = jwtAuthenticationManager;
     }
     @Bean
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http){
         AuthenticationWebFilter jwtFilter = new AuthenticationWebFilter(jwtAuthenticationManager);
-        final ServerBearerTokenAuthenticationConverter bearTokenCovverter = new ServerBearerTokenAuthenticationConverter();
-        bearTokenCovverter.setBearerTokenHeaderName("ldend");
-        jwtFilter.setServerAuthenticationConverter(bearTokenCovverter);
+        //final JwtBearerTokenAuthenticationConverter BearerTokenConverter = new JwtBearerTokenAuthenticationConverter();
+        //BearerTokenConverter.setBearerTokenHeaderName("ldend");
+        //jwtFilter.setServerAuthenticationConverter(BearerTokenConverter);
+
         http.authorizeExchange((authorize)->
             authorize.pathMatchers("/resources/**","/signup","/login").permitAll()
                      .pathMatchers("/admin/**").hasRole("ADMIN")

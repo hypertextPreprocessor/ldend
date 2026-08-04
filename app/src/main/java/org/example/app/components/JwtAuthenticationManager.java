@@ -1,21 +1,25 @@
 package org.example.app.components;
 
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtReactiveAuthenticationManager;
+
 import org.springframework.stereotype.Component;
 
 import reactor.core.publisher.Mono;
 @Component
 public class JwtAuthenticationManager implements ReactiveAuthenticationManager{
-    private final JwtReactiveAuthenticationManager delegate;
-    public JwtAuthenticationManager(ReactiveJwtDecoder jwtDecoder) {
-        this.delegate = new JwtReactiveAuthenticationManager(jwtDecoder);
+
+    public JwtAuthenticationManager() {
+        
     }
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
-       return delegate.authenticate(authentication);
+       //String token = authentication.getCredentials().toString();
+       String user = authentication.getName();
+       //UsernamePasswordAuthenticationToken token = UsernamePasswordAuthenticationToken.unauthenticated(user, "");
+       //return Mono.just(token);
+        return Mono.error(new Throwable("invalid user!"));
     }
     
 }
