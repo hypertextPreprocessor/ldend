@@ -7,9 +7,13 @@ import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
+import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
 import org.springframework.security.web.server.authentication.SessionLimit;
+import org.springframework.security.web.server.context.ServerSecurityContextRepository;
+import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
 import tools.jackson.databind.ObjectMapper;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
@@ -27,13 +31,17 @@ public class SecurityConfig {
         this.jwtAuthenticationManager = jwtAuthenticationManager;
     }
     @Bean
-    SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http){
+    SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http,ServerSecurityContextRepository securityContextRepository){
         AuthenticationWebFilter jwtFilter = new AuthenticationWebFilter(jwtAuthenticationManager);
         //final JwtBearerTokenAuthenticationConverter BearerTokenConverter = new JwtBearerTokenAuthenticationConverter();
         //BearerTokenConverter.setBearerTokenHeaderName("ldend");
         //jwtFilter.setServerAuthenticationConverter(BearerTokenConverter);
-
-        http.authorizeExchange((authorize)->
+        MyServerAuthenticationConverter myConverter = new MyServerAuthenticationConverter();
+        ReactiveDelegatingServerAuthenticationConverter converter = new ReactiveDelegatingServerAuthenticationConverter(myConverter);
+        jwtFilter.setServerAuthenticationConverter(converter);
+        http
+            .securityContextRepository(securityContextRepository)
+            .authorizeExchange((authorize)->
             authorize.pathMatchers("/resources/**","/signup","/login").permitAll()
                      .pathMatchers("/admin/**").hasRole("ADMIN")
                      //.anyExchange().denyAll()
@@ -47,10 +55,13 @@ public class SecurityConfig {
                     cocurrency.maximumSessions(SessionLimit.of(3))
                 )
             )   
-            .addFilterAt(jwtFilter, SecurityWebFiltersOrder.AUTHENTICATION);
+            .addFilterAt(jwtFilter, SecurityWebFiltersOrder.AUTHENTICATION); //每次请求都会验证jwt ，可优化为有session时，先验证session，没有session再验证jwt;
         return http.build();
     }
-
+    @Bean
+    ServerSecurityContextRepository securityContextRepository(){
+        return new WebSessionServerSecurityContextRepository();
+    }
     @Bean
     public LettuceConnectionFactory redisConnectionFactory(){
         return new LettuceConnectionFactory();
