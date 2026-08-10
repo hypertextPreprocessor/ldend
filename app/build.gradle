@@ -17,6 +17,11 @@ repositories {
   mavenCentral()
 }
 dependencies {
+    
+    implementation 'org.hibernate.reactive:hibernate-reactive-core:4.5.2.Final'
+    implementation 'io.vertx:vertx-pg-client:5.1.5'
+    compileOnly 'org.hibernate.orm:hibernate-jpamodelgen:8.0.0.Beta1'
+
     implementation 'io.jsonwebtoken:jjwt:0.13.0'
     //implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'

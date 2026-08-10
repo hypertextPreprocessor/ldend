@@ -6,9 +6,16 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("user")
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.SequenceGenerator;
+
+@Entity
+@Table(name="user")
 public class User {
     @Id
+    @GeneratedValue
+    @SequenceGenerator
     private Long id;
     private String username;
     private String password;
@@ -31,7 +38,7 @@ public class User {
         return this.username;
     }
     public String getPassword(){
-        return "************";
+        return this.password;
     }
     public OffsetDateTime getCreateAt(){
         return this.createAt;
