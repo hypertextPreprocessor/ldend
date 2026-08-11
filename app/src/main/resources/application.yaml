@@ -1,4 +1,10 @@
 app:
+    security:
+        jwt:
+            keystore-path: classpath:cnf/jwt-ed25519-keystore.p12
+            keystore-password: 'ppJD3%$jkd@#sk)sk20-Lix'
+            key-password: 'Jkdi23@%kd@lskCs'
+            key-alias: jwt-ed25519-key
     securityKey: "rjmppJKe1M7Dr5wJq4VxKp4S677/koi59BvkZSzPBYE="
     session:
         expr: 2h

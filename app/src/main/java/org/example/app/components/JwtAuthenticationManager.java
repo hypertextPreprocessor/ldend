@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -26,7 +27,8 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager{
       return Mono.justOrEmpty(authentication.getCredentials()).map(Object::toString)
                  .flatMap(token->{
                     try{
-                        
+                        String username = authentication.getCredentials().toString();
+                        Jwts.parser().verifyWith().build().parse
                     }catch(JwtException exp){
                         return Mono.error(new BadCredentialsException("Invalid JWT Token: " + exp.getMessage(),exp));
                     }
