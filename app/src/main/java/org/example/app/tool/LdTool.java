@@ -46,7 +46,8 @@ public class LdTool {
         return keyStore;
     }
     public static void main(){
-        String txt = Security.getProviders().toString();
-        System.out.println(txt);
+        //String txt = Security.getProviders().toString();
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        System.out.println(encoder.encode("ninia@0210"));
     }
 }

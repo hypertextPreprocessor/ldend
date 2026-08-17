@@ -11,7 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.SequenceGenerator;
 
 @Entity
-@Table(name="user")
+@Table(name="users")
 public class User {
     @Id
     @GeneratedValue
@@ -24,9 +24,11 @@ public class User {
     @Column("update_at")
     private OffsetDateTime updateAt; //或ZonedDateTime ，无时区可以使用LocalDateTime
     private Boolean enabled;
+    public User() {}
     public User(Long id, String username, String password,OffsetDateTime createAt, OffsetDateTime updateAt,Boolean enabled){
         this.id = id;
         this.username = username;
+        this.password = password;
         this.createAt = createAt;
         this.updateAt = updateAt;
         this.enabled = enabled;

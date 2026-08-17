@@ -9,6 +9,6 @@ import java.util.List;
 
 
 public interface UserRepository extends ReactiveCrudRepository<User,Long> {
-    public Mono<List<User>> findByUsername(String username);
+    public Mono<User> findByUsername(String username);
     
 }

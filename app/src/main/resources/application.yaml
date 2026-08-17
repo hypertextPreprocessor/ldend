@@ -19,7 +19,7 @@ spring:
             username:
             password:
     r2dbc:
-        url:    "r2dbc:postgresql://localhost:5432/youyou"
+        url:    "r2dbc:postgresql://localhost:5432/ldend"
         username:   youyou
         password:   "ninia@0210"
 
