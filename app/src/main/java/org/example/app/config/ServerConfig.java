@@ -29,7 +29,7 @@ public class ServerConfig implements WebFluxConfigurer {
     }
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry){
-        //registry.addResourceHandler("/images/**").addResourceLocations("/app/src/main/resources/images")
+        registry.addResourceHandler("/**").addResourceLocations("classpath:/resource/templates/");
     }
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry){

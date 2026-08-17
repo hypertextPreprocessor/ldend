@@ -10,34 +10,17 @@ import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
-import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
-import org.springframework.security.web.server.authentication.HttpStatusServerEntryPoint;
-import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
-import org.springframework.security.web.server.authentication.ServerAuthenticationFailureHandler;
 import org.springframework.security.web.server.authentication.SessionLimit;
 import org.springframework.security.web.server.context.ServerSecurityContextRepository;
 import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
-import org.springframework.web.server.ServerWebExchange;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import reactor.core.publisher.Mono;
 import tools.jackson.databind.ObjectMapper;
 
-//import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
-import org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 
 @Configuration
@@ -110,23 +93,6 @@ public class SecurityConfig {
     public LettuceConnectionFactory redisConnectionFactory(){
         return new LettuceConnectionFactory();
     }
-    // @Bean
-    // ReactiveRedisTemplate<String, String> ReactiveRedisTemplate(ReactiveRedisConnectionFactory connectionFactory) {
-    //     return new ReactiveRedisTemplate<>(connectionFactory, RedisSerializationContext.string());
-    // }
-    @Bean
-    public ReactiveRedisTemplate<String, Object> reactiveRedisTemplate(ReactiveRedisConnectionFactory connectionFactory,ObjectMapper objectMapper) {
-
-        // objectMapper.serializationConfig();
-        // objectMapper.registeredModules();
-        //objectMapper.registerModules(SecurityJacksonModules.getModules(getClass().getClassLoader()));
-        RedisSerializationContext<String, Object> serializationContext = RedisSerializationContext
-                .<String, Object>newSerializationContext(new StringRedisSerializer())
-                .value(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJacksonJsonRedisSerializer(objectMapper)))
-                .build();
-                
-        return new ReactiveRedisTemplate<>(connectionFactory, serializationContext);
-    }   
     @Bean
     ReactiveStringRedisTemplate reactiveStringRedisTemplate(ReactiveRedisConnectionFactory factory) {
         return new ReactiveStringRedisTemplate(factory);
@@ -138,4 +104,3 @@ public class SecurityConfig {
     //     return jwtRam;
     // }
 }
-//JwtAuthenticationProvider
